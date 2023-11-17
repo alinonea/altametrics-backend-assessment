@@ -26,10 +26,13 @@ export class AuthService {
         if (!pwMatches) throw new ForbiddenException('Credentials incorrect: password') 
 
       
-        return this.signToken(user.id, user.email)
+        return {
+            user_name: user.name,
+            access_token: await this.signToken(user.id, user.email)
+        }
     }
 
-    async signToken(userId: number, email: string): Promise<{access_token: string}>{
+    async signToken(userId: number, email: string): Promise<string>{
         const payload = {
             sub: userId,
             email: email
@@ -42,8 +45,6 @@ export class AuthService {
             secret: secret
         })
 
-        return {
-            access_token: token
-        }
+        return token;    
     }
 }
